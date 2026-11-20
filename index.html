@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Examen — FERRANDI Paris</title>
+<style>
+:root{
+  --navy:#112849; --navy-2:#1d3a63; --bordeaux:#862330; --or:#b08d57; --or-pale:#f3ece0;
+  --ivoire:#faf8f3; --encre:#1c2230; --gris:#626b78; --filet:#ddd6c9; --bleu-pale:#e9eef3; --vert:#2f6b4f;
+  --serif:"Century Schoolbook","TeX Gyre Schola","New Century Schoolbook",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--ivoire);color:var(--encre);font-family:var(--serif);font-size:17px;line-height:1.55}
+button,input,textarea,select{font:inherit;color:inherit}
+.caps{font-family:var(--sans);text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:600}
+.hidden{display:none!important}
+a{color:var(--navy)}
+
+/* En-tête de marque */
+.marque{display:flex;align-items:baseline;gap:14px}
+.marque .mot{font-family:var(--serif);font-weight:700;letter-spacing:.32em;font-size:15px;color:var(--navy)}
+.marque .mot b{color:var(--bordeaux);font-weight:700}
+.marque .sep{width:1px;height:14px;background:var(--or);align-self:center}
+
+/* Accueil */
+#accueil{max-width:880px;margin:0 auto;padding:48px 28px 80px}
+.couverture{border-top:3px solid var(--navy);padding-top:22px}
+.couverture h1{font-size:38px;line-height:1.15;margin:28px 0 8px;color:var(--navy);font-weight:700}
+.couverture .st{color:var(--gris);font-style:italic;margin:0 0 30px}
+.filet-or{height:1px;background:var(--or);margin:26px 0}
+.infos{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--filet);border-bottom:1px solid var(--filet)}
+.infos div{padding:14px 18px 14px 0}
+.infos div+div{padding-left:18px;border-left:1px solid var(--filet)}
+.infos .v{font-size:22px;color:var(--navy);margin-top:4px}
+.infos .caps{color:var(--or)}
+.bareme{width:100%;border-collapse:collapse;margin:18px 0 6px;font-size:15.5px}
+.bareme th{text-align:left;font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gris);font-weight:600;padding:8px 0;border-bottom:1px solid var(--navy)}
+.bareme td{padding:9px 0;border-bottom:1px solid var(--filet)}
+.bareme td:not(:first-child),.bareme th:not(:first-child){text-align:right}
+.bareme tr.tot td{font-weight:700;border-bottom:none;color:var(--navy)}
+.consignes{margin:0;padding-left:20px}
+.consignes li{margin:6px 0}
+h2.sec{font-size:13px;margin:34px 0 10px;color:var(--navy)}
+.form-id{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:10px}
+.champ label{display:block;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--gris);margin-bottom:6px;letter-spacing:.04em}
+.champ input,.champ select{width:100%;padding:11px 12px;border:1px solid #c9c2b4;border-radius:2px;background:#fff;font-family:var(--sans);font-size:16px}
+.champ input:focus,textarea:focus,.num input:focus{outline:2px solid var(--or);outline-offset:1px;border-color:var(--or)}
+.attest{display:flex;gap:10px;align-items:flex-start;margin:22px 0 4px;font-size:15.5px}
+.attest input{margin-top:5px;width:18px;height:18px;accent-color:var(--navy)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--navy);background:var(--navy);color:#fff;padding:12px 22px;border-radius:2px;cursor:pointer;font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em}
+.btn:hover{background:var(--navy-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sec{background:transparent;color:var(--navy)}
+.btn.sec:hover{background:var(--bleu-pale)}
+.btn.bord{background:var(--bordeaux);border-color:var(--bordeaux)}
+.btn.bord:hover{background:#6e1c27}
+.erreur{color:var(--bordeaux);font-family:var(--sans);font-size:14.5px;margin-top:12px;min-height:20px}
+.bandeau-demo{background:var(--or-pale);border-left:3px solid var(--or);padding:10px 14px;font-family:var(--sans);font-size:13.5px;margin-bottom:22px}
+
+/* Barre supérieure de l'examen */
+#barre{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--filet);box-shadow:0 1px 0 rgba(17,40,73,.04)}
+#barre .in{max-width:1180px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:18px}
+#barre .qui{font-family:var(--sans);font-size:13.5px;color:var(--gris);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#barre .qui b{color:var(--encre)}
+.minuteur{font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:22px;font-weight:700;color:var(--navy);padding:4px 12px;border:1px solid var(--filet);border-radius:2px;min-width:118px;text-align:center}
+.minuteur.alerte{color:#fff;background:var(--bordeaux);border-color:var(--bordeaux)}
+.minuteur small{display:block;font-size:9.5px;letter-spacing:.16em;font-weight:600;text-transform:uppercase;opacity:.7;margin-top:-2px}
+.outil{background:none;border:1px solid var(--filet);padding:8px 12px;border-radius:2px;cursor:pointer;font-family:var(--sans);font-size:13.5px;color:var(--navy)}
+.outil:hover{background:var(--bleu-pale)}
+.etat-sync{font-family:var(--sans);font-size:12px;color:var(--gris);white-space:nowrap}
+.etat-sync.ko{color:var(--bordeaux)}
+.progression{height:3px;background:var(--bleu-pale)}
+.progression i{display:block;height:100%;width:0;background:var(--or);transition:width .3s}
+
+/* Corps de l'examen */
+#examen .cadre{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:190px 1fr;gap:40px;padding:28px 24px 120px}
+nav.index{position:sticky;top:96px;align-self:start;font-family:var(--sans);font-size:13px}
+nav.index .grp{margin:0 0 16px}
+nav.index .grp .caps{color:var(--or);margin-bottom:8px;display:block}
+nav.index .pts{display:flex;flex-wrap:wrap;gap:6px}
+nav.index a{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 6px;border:1px solid var(--filet);text-decoration:none;color:var(--navy);border-radius:2px;background:#fff}
+nav.index a.ok{background:var(--navy);color:#fff;border-color:var(--navy)}
+nav.index .leg{color:var(--gris);font-size:12px;line-height:1.5;margin-top:18px}
+main{min-width:0;max-width:780px}
+.partie-titre{border-top:3px solid var(--navy);padding-top:14px;margin:8px 0 6px;display:flex;justify-content:space-between;align-items:baseline;gap:20px}
+.partie-titre h2{margin:0;font-size:27px;color:var(--navy)}
+.partie-titre .caps{color:var(--or);white-space:nowrap}
+.partie-intro{color:var(--gris);font-style:italic;margin:0 0 18px}
+.question{padding:22px 0 24px;border-bottom:1px solid var(--filet);display:grid;grid-template-columns:54px 1fr;gap:6px}
+.question .no{font-size:30px;line-height:1;color:var(--or);font-weight:700;font-variant-numeric:lining-nums}
+.question .enonce{margin:0 0 12px;font-weight:700;color:var(--encre)}
+.opts{display:grid;gap:7px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:9px 12px;border:1px solid transparent;border-radius:2px;cursor:pointer;transition:background .15s}
+.opt:hover{background:#fff;border-color:var(--filet)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .l{flex:none;width:26px;height:26px;border:1px solid #b7af9f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--gris);margin-top:1px}
+.opt input:checked + .l{background:var(--navy);border-color:var(--navy);color:#fff}
+.opt input:focus-visible + .l{outline:2px solid var(--or);outline-offset:2px}
+.opt.sel{background:#fff;border-color:var(--navy)}
+.effacer{font-family:var(--sans);font-size:12px;color:var(--gris);background:none;border:none;cursor:pointer;padding:6px 0 0;text-decoration:underline;justify-self:start}
+
+.exercice{margin-top:36px}
+.exercice h3{font-size:22px;color:var(--navy);margin:0 0 4px;display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+.exercice h3 .caps{color:var(--or)}
+.exercice p.contexte{margin:10px 0 14px}
+table.donnees{border-collapse:collapse;width:100%;margin:6px 0 10px;font-size:15.5px;background:#fff}
+table.donnees th{background:var(--navy);color:#fff;font-family:var(--sans);font-weight:600;font-size:13px;text-align:left;padding:9px 12px}
+table.donnees td{padding:8px 12px;border-bottom:1px solid var(--filet)}
+table.donnees td.n{text-align:right;font-variant-numeric:tabular-nums}
+table.donnees tr:nth-child(even) td{background:var(--bleu-pale)}
+.sq{padding:22px 0;border-bottom:1px solid var(--filet);display:grid;grid-template-columns:54px 1fr;gap:6px}
+.sq .no{font-size:24px;color:var(--or);font-weight:700}
+.sq .enonce{font-weight:700;margin:0 0 12px}
+.sq .enonce .p{font-family:var(--sans);font-weight:500;font-size:12.5px;color:var(--gris);white-space:nowrap}
+.nums{display:flex;flex-wrap:wrap;gap:14px 22px;margin-bottom:12px}
+.num label{display:block;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--gris);margin-bottom:5px}
+.num .bx{display:flex;align-items:stretch;border:1px solid #c9c2b4;background:#fff;border-radius:2px;width:220px}
+.num input{border:none;padding:10px 12px;width:100%;font-family:var(--sans);font-size:17px;font-variant-numeric:tabular-nums;background:transparent;min-width:0}
+.num .u{padding:10px 10px;font-family:var(--sans);font-size:13px;color:var(--gris);background:var(--ivoire);border-left:1px solid #e3ddd1;white-space:nowrap}
+.sel-rep{padding:10px 12px;border:1px solid #c9c2b4;border-radius:2px;background:#fff;font-family:var(--sans);font-size:16px;min-width:220px}
+.num .lu{font-family:var(--sans);font-size:12px;color:var(--gris);margin-top:4px;min-height:16px}
+.num .lu.ko{color:var(--bordeaux)}
+textarea{width:100%;min-height:74px;padding:10px 12px;border:1px solid #c9c2b4;border-radius:2px;background:#fff;font-family:var(--sans);font-size:15px;resize:vertical;line-height:1.45}
+.lbl-calc{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--gris);margin:4px 0 5px;display:block}
+.choix{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.choix .opt{border:1px solid var(--filet);background:#fff;padding:9px 16px}
+.fin-ex{margin-top:46px;padding:22px 24px;border:1px solid var(--navy);background:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+
+/* Modales */
+.voile{position:fixed;inset:0;background:rgba(17,40,73,.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modale{background:#fff;max-width:640px;width:100%;max-height:88vh;overflow:auto;border-top:3px solid var(--navy);padding:26px 28px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modale h3{margin:0 0 6px;color:var(--navy);font-size:22px}
+.modale .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
+.formulaire td{padding:8px 10px;border-bottom:1px solid var(--filet);font-size:15px;vertical-align:top}
+.formulaire td:first-child{font-weight:700;color:var(--navy);width:38%}
+.manque{font-family:var(--sans);font-size:14px;color:var(--bordeaux);margin:10px 0}
+
+/* Calculatrice */
+#calc{position:fixed;right:24px;bottom:24px;z-index:40;width:270px;background:#fff;border:1px solid var(--navy);box-shadow:0 12px 40px rgba(17,40,73,.25);font-family:var(--sans)}
+#calc .t{display:flex;justify-content:space-between;align-items:center;background:var(--navy);color:#fff;padding:7px 10px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;cursor:move}
+#calc .t button{background:none;border:none;color:#fff;cursor:pointer;font-size:18px;line-height:1}
+#calc .ecran{padding:10px 12px;text-align:right;border-bottom:1px solid var(--filet)}
+#calc .expr{font-size:13px;color:var(--gris);min-height:18px;word-break:break-all}
+#calc .res{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--navy);min-height:30px;word-break:break-all}
+#calc .touches{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--filet)}
+#calc .touches button{border:none;background:#fff;padding:12px 0;font-size:16px;cursor:pointer}
+#calc .touches button:hover{background:var(--bleu-pale)}
+#calc .touches .op{color:var(--bordeaux);font-weight:700}
+#calc .touches .eg{background:var(--navy);color:#fff}
+
+/* Toasts */
+#toast{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:60;background:var(--bordeaux);color:#fff;padding:12px 20px;font-family:var(--sans);font-size:15px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.2);border-radius:2px;display:none}
+
+/* Fin */
+#fin{max-width:720px;margin:0 auto;padding:60px 28px}
+#fin .carte{border-top:3px solid var(--navy);background:#fff;padding:30px 32px;margin-top:30px}
+#fin h1{color:var(--navy);margin:0 0 10px;font-size:30px}
+#fin .ref{font-family:var(--sans);font-size:14px;background:var(--bleu-pale);padding:10px 14px;margin:16px 0;word-break:break-all}
+
+@media (max-width:900px){
+  #examen .cadre{grid-template-columns:1fr;gap:0;padding:18px 16px 100px}
+  nav.index{display:none}
+  .form-id,.infos{grid-template-columns:1fr}
+  .infos div+div{border-left:none;padding-left:0;border-top:1px solid var(--filet)}
+  #barre .in{flex-wrap:wrap;gap:10px;padding:8px 14px}
+  .etat-sync{display:none}
+  .question,.sq{grid-template-columns:40px 1fr}
+  .couverture h1{font-size:30px}
+}
+@media print{#barre,nav.index,#calc,.fin-ex{display:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ ACCUEIL ============ -->
+<section id="accueil">
+  <div id="bandeauDemo" class="bandeau-demo hidden" data-t>Mode démonstration : la page n'est pas encore reliée à la feuille de collecte. Les réponses restent sur cet ordinateur et aucune copie n'est transmise.</div>
+  <div class="couverture">
+    <div class="marque"><span class="mot">FERRANDI <b>PARIS</b></span><span class="sep"></span><span class="caps" style="color:var(--gris)" id="entete"></span></div>
+    <h1 id="titre"></h1>
+    <p class="st" id="sousTitre"></p>
+    <div class="infos">
+      <div><span class="caps" data-t>Durée</span><div class="v">1 h 30</div></div>
+      <div><span class="caps" data-t>Barème</span><div class="v" data-t>20 points</div></div>
+      <div><span class="caps" data-t>Matériel</span><div class="v" style="font-size:17px;margin-top:8px" id="materiel"></div></div>
+    </div>
+  </div>
+
+  <h2 class="sec caps" data-t>Organisation de l'épreuve</h2>
+  <table class="bareme" id="orga"></table>
+
+  <h2 class="sec caps" data-t>Consignes</h2>
+  <ul class="consignes" id="consignes"></ul>
+
+  <h2 class="sec caps" data-t>Identification</h2>
+  <div class="form-id">
+    <div class="champ"><label for="nom" data-t>Nom *</label><input id="nom" autocomplete="family-name" required></div>
+    <div class="champ"><label for="prenom" data-t>Prénom *</label><input id="prenom" autocomplete="given-name" required></div>
+    <div class="champ" id="champGroupe"><label for="groupe" data-t>Groupe</label><input id="groupe" placeholder="ex. B2 – groupe A"></div>
+  </div>
+  <div class="form-id hidden" id="blocCode" style="grid-template-columns:1fr 2fr;margin-top:16px">
+    <div class="champ"><label for="code" data-t>Code de session *</label><input id="code" autocomplete="off"></div>
+    <div style="align-self:end;font-family:var(--sans);font-size:13.5px;color:var(--gris);padding-bottom:12px" data-t>Code communiqué en salle par l'enseignante.</div>
+  </div>
+  <label class="attest"><input type="checkbox" id="attest"> <span data-t>J'atteste composer seul·e, sans documents, et avoir pris connaissance des consignes ci-dessus.</span></label>
+  <div style="margin-top:22px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+    <button class="btn" id="btnCommencer" disabled data-t>Commencer l'examen</button>
+    <span class="caps" style="color:var(--gris)" data-t>Le temps démarre au clic</span>
+  </div>
+  <div class="erreur" id="errAccueil" role="alert"></div>
+</section>
+
+<!-- ============ EXAMEN ============ -->
+<section id="examen" class="hidden">
+  <div id="barre">
+    <div class="in">
+      <div class="marque" style="flex:none"><span class="mot" style="font-size:12px">FERRANDI <b>PARIS</b></span></div>
+      <div class="qui" id="qui"></div>
+      <span class="etat-sync" id="etatSync"></span>
+      <button class="outil" id="btnFormulaire" type="button" data-t>Formulaire</button>
+      <button class="outil" id="btnCalc" type="button" data-t>Calculatrice</button>
+      <div class="minuteur" id="minuteur" aria-live="off">1:30:00<small data-t>restant</small></div>
+      <button class="btn bord" id="btnRemettre" type="button" style="padding:9px 16px" data-t>Remettre</button>
+    </div>
+    <div class="progression"><i id="prog"></i></div>
+  </div>
+  <div class="cadre">
+    <nav class="index" id="index" aria-label="Navigation dans l'examen"></nav>
+    <main id="contenu"></main>
+  </div>
+</section>
+
+<!-- ============ FIN ============ -->
+<section id="fin" class="hidden">
+  <div class="marque"><span class="mot">FERRANDI <b>PARIS</b></span></div>
+  <div class="carte">
+    <h1 id="finTitre" data-t>Copie remise</h1>
+    <p id="finTexte"></p>
+    <div class="ref" id="finRef"></div>
+    <div id="finActions" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+  </div>
+</section>
+
+<div id="toast" role="status"></div>
+<div id="modales"></div>
+
+<div id="calc" class="hidden" aria-label="Calculatrice">
+  <div class="t" id="calcTitre"><span data-t>Calculatrice</span><button type="button" id="calcFermer" aria-label="Fermer">×</button></div>
+  <div class="ecran"><div class="expr" id="calcExpr"></div><div class="res" id="calcRes">0</div></div>
+  <div class="touches" id="calcTouches"></div>
+</div>
+
+<script>
+/* ==== Adresse de l'application Web Google Apps Script (finit par /exec) ==== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbwhZztRX2Cuz-Fb_pqomylTNln5Qb2gykHKmTtOfo157hvYFbOYCIMDopjhDKorajKc/exec';
+/* ========================================================================== */
+
+const EXAM = {
+  id: 'mhrb',
+  lang: 'en',
+  pfx: 'mhrb-en',
+  entete: 'Mock continuous assessment exam',
+  titre: 'Supply Chain Management',
+  sousTitre: 'Mock exam — group MHR2C · Dr Imene Essoussi',
+  dureeMin: 90,
+  materiel: 'Calculator allowed; no notes or documents',
+  groupes: ['MHR2C'],
+  organisation: [['1. MCQ — 12 questions × 0.75 mark', '9', '25 min'], ['2. Applied exercises — 2 exercises', '11', '65 min']],
+  consignes: [
+    'Part 1: choose one answer per question. No marks are deducted for wrong answers.',
+    'Part 2: type your results in the answer boxes (e.g. <i>28.80</i>). In the text box, show the formula used and your working. Unless stated otherwise, round results to two decimal places. A correct calculation based on an earlier wrong result still earns the marks.',
+    'The timer starts as soon as you click “Start the exam” and does not stop if you close the page. When time runs out, your paper is submitted automatically.',
+    'Your answers are saved as you go. If you lose the connection, reopen the same link and enter exactly the same last name and first name to resume your paper.',
+    'The formula sheet and a calculator are available in the top bar. Leaving the page (switching tab or application) is recorded and reported to your lecturer.'
+  ],
+  formulaire: [
+    ['Usable quantity', 'Quantity purchased × yield'],
+    ['Effective cost per usable kg', 'Total purchase cost ÷ usable quantity'],
+    ['Gross requirement (GR)', 'Quantity served × quantity per unit ÷ yield'],
+    ['Net requirement (NR)', 'max(0 ; GR + safety stock − stock on hand − scheduled receipts)'],
+    ['Order quantity', 'NR rounded up to the supplier’s pack size (carton, bag, vacuum pack…)'],
+    ['Order date', 'Required delivery date − supply lead time'],
+    ['Quantity to plan (uncertain demand)', 'μ + z × σ, rounded up to the next whole unit'],
+    ['Bullwhip ratio (BW)', 'Variance of orders placed by a stage ÷ variance of the demand it receives']
+  ],
+  partie1Intro: 'Each question is worth 0.75 mark. Only one answer is correct.',
+  partie2Titre: 'Part 2 — Applied exercises',
+  partie2Intro: 'Show the formula used, your working and the result with its unit (kg, €, covers).',
+  qcm: [
+    { id: 'q1', texte: 'Every evening, a hotel restaurant automatically sends its wholesaler the sales recorded by its point-of-sale (POS) system, together with its stock levels. The wholesaler uses this to prepare the next day’s delivery. Which supply chain flow is this?',
+      options: { A: 'A physical flow.', B: 'An information flow.', C: 'A financial flow.', D: 'A return flow.' } },
+    { id: 'q2', texte: 'A hotel restaurant has 80 seats. This Tuesday lunchtime, only 50 covers were served, although the full front-of-house and kitchen team was on duty. Which concept do the 30 empty seats illustrate?',
+      options: { A: 'The perishability of physical inputs, linked to the cold chain.', B: 'The bullwhip effect between the restaurant and its suppliers.', C: 'The perishability of service capacity.', D: 'Dependent demand calculated from the menu.' } },
+    { id: 'q3', texte: 'In a hotel’s room service, once the trays have been set up in the kitchen, a room-service attendant takes them on a trolley to the guests’ rooms. In Porter’s value chain, which activity does this step correspond to?',
+      options: { A: 'Outbound logistics.', B: 'Operations.', C: 'Marketing and sales.', D: 'Inbound logistics.' } },
+    { id: 'q4', num: true, texte: 'A hotel sells its Sunday brunch for €65 per person. A guest is willing to pay up to €80. Per cover, the supply chain bears the following costs: purchasing €22, transport and storage €4, preparation and service €25, energy €3, waste €6. What is the total supply chain surplus generated for this cover?',
+      options: { A: '€5', B: '€15', C: '€20', D: '€65' } },
+    { id: 'q5', texte: 'Before contacting coffee roasters, a hotel’s purchasing manager records the annual coffee consumption of its three outlets. He then sets out his requirements: 100% arabica, roasted less than 15 days before delivery, weekly delivery and 1 kg bags. Which stage of the sourcing process does this work correspond to?',
+      options: { A: 'Analysis of purchasing needs and spend.', B: 'Analysis of the supplier market.', C: 'Evaluation of the bids received.', D: 'Supplier performance management.' } },
+    { id: 'q6', texte: 'To choose a new supplier of guest amenities, a hotel defines its needs, consults several manufacturers, compares the proposals and signs a framework agreement. Which process does this illustrate?',
+      options: { A: 'Procure-to-Pay (P2P).', B: 'Purchase order–invoice matching.', C: 'Source-to-Contract (S2C).', D: 'Conformity check at goods receipt.' } },
+    { id: 'q7', texte: 'Every year, a hotel group spends a large budget on standard cleaning products (detergents, disinfectants), which are available from many interchangeable suppliers. How should this purchase be classified?',
+      options: { A: 'Non-critical item.', B: 'Leverage item.', C: 'Bottleneck item.', D: 'Strategic item.' } },
+    { id: 'q8', texte: 'On Monday, based on confirmed bookings, a hotel’s F&B manager works out the quantities of fish and drinks needed for the banquet for 250 guests planned on Thursday. He then places the orders and sets the delivery slots. Which planning level do these decisions correspond to?',
+      options: { A: 'Strategic.', B: 'Tactical.', C: 'Operational.', D: 'Real-time execution.' } },
+    { id: 'q9', texte: 'According to transaction cost theory, when should a hotel choose a more integrated governance mode rather than the market?',
+      options: { A: 'When the purchase is one-off and of low value.', B: 'When the product is standard and there are many suppliers.', C: 'When asset specificity and uncertainty are high.', D: 'When the supplier offers the lowest price.' } },
+    { id: 'q10', num: true, texte: 'A hotel restaurant buys 20 kg of whole salmon at €18.00/kg. After filleting and trimming, the yield is 45%. What is the effective cost per kilogram of usable salmon?',
+      options: { A: '€8.10/kg', B: '€18.00/kg', C: '€26.10/kg', D: '€40.00/kg' } },
+    { id: 'q11', num: true, texte: 'For a cocktail reception, a hotel expects 250 guests on average, with a standard deviation of 15 guests. To reach a 99% service level, the hotel uses a safety factor z = 2.33. How many covers should the hotel plan for this reception (rounded up to the next whole unit)?',
+      options: { A: '250 covers', B: '265 covers', C: '285 covers', D: '300 covers' } },
+    { id: 'q12', num: true, texte: 'A hotel restaurant recorded the following variances over one quarter. What is the wholesaler’s bullwhip ratio?',
+      table: '<thead><tr><th>Supply chain stage</th><th style="text-align:right">Variance (covers²)</th></tr></thead><tbody><tr><td>Restaurant sales to guests</td><td class="n">60</td></tr><tr><td>Restaurant orders to the wholesaler</td><td class="n">168</td></tr><tr><td>Wholesaler orders to the producer</td><td class="n">420</td></tr></tbody>',
+      options: { A: '2.5', B: '2.8', C: '7.0', D: '1.45' } }
+  ],
+  champs: [
+    { id: 'e1a_A', label: 'TCO chocolatier A', unite: '€/kg' },
+    { id: 'e1a_B', label: 'TCO chocolatier B', unite: '€/kg' },
+    { id: 'e1b_A', label: 'Annual cost A', unite: '€' },
+    { id: 'e1b_B', label: 'Annual cost B', unite: '€' },
+    { id: 'e1b_eco', label: 'Annual saving', unite: '€' },
+    { id: 'e2a', label: 'Beef fillet portions', unite: 'portions' },
+    { id: 'e2b', label: 'Cooked meat required', unite: 'kg' },
+    { id: 'e2c', label: 'Gross requirement', unite: 'kg' },
+    { id: 'e2d', label: 'Net requirement to order', unite: 'kg' },
+    { id: 'e2e_sousvides', label: 'Number of vacuum packs', unite: 'packs' },
+    { id: 'e2e_qte', label: 'Quantity delivered', unite: 'kg' }
+  ],
+  exercices: [
+    { id: 'ex1', titre: 'Exercise 1 — Choosing a dark chocolate supplier', points: '5 marks',
+      contexte: 'The pastry kitchen and restaurant of a 5-star hotel use <b>1,500 kg of dark chocolate per year</b>. The purchasing manager compares the offers of two chocolatiers.',
+      table: '<thead><tr><th>Cost items (per kg)</th><th style="text-align:right">Chocolatier A</th><th style="text-align:right">Chocolatier B</th></tr></thead><tbody><tr><td>Purchase price</td><td class="n">€14.20</td><td class="n">€14.90</td></tr><tr><td>Delivery</td><td class="n">€0.60</td><td class="n">€0.00</td></tr><tr><td>Claims and losses</td><td class="n">€0.45</td><td class="n">€0.15</td></tr><tr><td>Administrative handling</td><td class="n">€0.25</td><td class="n">€0.15</td></tr></tbody>',
+      sous: [
+        { id: 'ex1a', lettre: 'a', enonce: 'Calculate the total cost of ownership (TCO) per kilogram for each of the two chocolatiers. Show your working.', pts: '1.5 marks', champs: ['e1a_A', 'e1a_B'], calc: 'e1a_calc' },
+        { id: 'ex1b', lettre: 'b', enonce: 'Calculate the total annual cost for each chocolatier, then work out the annual saving the hotel could make. Show your working.', pts: '1.5 marks', champs: ['e1b_A', 'e1b_B', 'e1b_eco'], calc: 'e1b_calc' },
+        { id: 'ex1c', lettre: 'c', enonce: 'Which chocolatier do you recommend to the hotel? Justify your choice using your results and state one non-financial criterion to check before signing the contract.', pts: '2 marks',
+          choix: { id: 'e1c_choix', label: 'Recommended chocolatier', options: [['A', 'Chocolatier A'], ['B', 'Chocolatier B']] },
+          textes: [['e1c_justif', 'Justification based on your figures'], ['e1c_critere', 'Non-financial criterion to check before signing (and why)']] }
+      ] },
+    { id: 'ex2', titre: 'Exercise 2 — Planning supplies for a gala dinner', points: '6 marks',
+      contexte: 'A hotel is hosting a gala dinner for 400 covers on Saturday evening. 45% of the guests have chosen the beef fillet. Each portion requires 160 g of cooked meat, and the yield after trimming and cooking is 80%. The purchasing manager has the following information:',
+      table: '<thead><tr><th>Data</th><th style="text-align:right">Values</th></tr></thead><tbody><tr><td>Safety stock</td><td class="n">3 kg</td></tr><tr><td>Stock on hand (raw meat)</td><td class="n">5 kg</td></tr><tr><td>Delivery already scheduled before the dinner</td><td class="n">8 kg</td></tr><tr><td>Supplier pack size</td><td class="n">4 kg vacuum pack</td></tr><tr><td>Required delivery date</td><td class="n">Saturday, 6 a.m.</td></tr><tr><td>Supply lead time</td><td class="n">3 calendar days</td></tr></tbody>',
+      sous: [
+        { id: 'ex2a', lettre: 'a', enonce: 'Calculate the number of beef fillet portions to prepare.', pts: '1 mark', champs: ['e2a'], calc: 'e2a_calc' },
+        { id: 'ex2b', lettre: 'b', enonce: 'Calculate the quantity of meat needed to serve all the portions, in kilograms.', pts: '1 mark', champs: ['e2b'], calc: 'e2b_calc' },
+        { id: 'ex2c', lettre: 'c', enonce: 'Calculate the gross requirement for beef fillet.', pts: '1.25 marks', champs: ['e2c'], calc: 'e2c_calc' },
+        { id: 'ex2d', lettre: 'd', enonce: 'Determine the net requirement of beef fillet to order.', pts: '1.25 marks', champs: ['e2d'], calc: 'e2d_calc' },
+        { id: 'ex2e', lettre: 'e', enonce: 'The supplier only delivers 4 kg vacuum packs. Calculate the number of vacuum packs to order and the total quantity that will be delivered. State the day the purchase order must be issued.', pts: '1.5 marks', champs: ['e2e_sousvides', 'e2e_qte'],
+          select: { id: 'e2e_jour', label: 'Day the purchase order is issued (at the latest)', options: [['Lundi', 'Monday'], ['Mardi', 'Tuesday'], ['Mercredi', 'Wednesday'], ['Jeudi', 'Thursday'], ['Vendredi', 'Friday'], ['Samedi', 'Saturday'], ['Dimanche', 'Sunday']] }, calc: 'e2e_calc' }
+      ] }
+  ],
+  manuel: { id: 'e1c_manuel', sous: 'ex1c', titre: 'Question 1c — justification and non-financial criterion', bareme: '0.75 for a justification based on figures (€450 difference or TCO), 0.75 for a relevant non-financial criterion.' }
+};
+
+const PFX = 'exam-' + (EXAM.pfx || EXAM.id) + ':';
+const LANG = EXAM.lang || 'fr';
+const LOC = LANG === 'en' ? 'en-GB' : 'fr-FR';
+const EN = {
+  "Mode démonstration : la page n'est pas encore reliée à la feuille de collecte. Les réponses restent sur cet ordinateur et aucune copie n'est transmise.": "Demo mode: this page is not yet connected to the results sheet. Answers stay on this computer and no paper is submitted.",
+  "Durée": "Duration", "20 points": "20 marks", "Barème": "Marks", "Matériel": "Materials", "Organisation de l'épreuve": "Exam structure", "Consignes": "Instructions", "Identification": "Your details",
+  "Nom *": "Last name *", "Prénom *": "First name *", "Groupe": "Group", "Groupe *": "Group *", "Code de session *": "Session code *",
+  "Code communiqué en salle par l'enseignante.": "Code given in class by your lecturer.",
+  "J'atteste composer seul·e, sans documents, et avoir pris connaissance des consignes ci-dessus.": "I confirm that I am working alone, without notes, and that I have read the instructions above.",
+  "Commencer l'examen": "Start the exam", "Commencer l’examen": "Start the exam", "Le temps démarre au clic": "The timer starts when you click",
+  "Formulaire": "Formula sheet", "Calculatrice": "Calculator", "restant": "remaining", "Remettre": "Submit", "Copie remise": "Paper submitted",
+  "Partie": "Part", "Points": "Marks", "Temps conseillé": "Suggested time", "Total": "Total", "Choisir…": "Select…",
+  "Vérifiez le nom et le prénom.": "Please check your last name and first name.", "Connexion refusée.": "Connection refused.", "Connexion…": "Connecting…",
+  "Le serveur ne répond pas. Vérifiez la connexion et réessayez.": "The server is not responding. Check your connection and try again.",
+  "L’examen n’est pas encore ouvert. Attendez la consigne de l’enseignante.": "The exam is not open yet. Please wait for your lecturer’s instructions.",
+  "Partie 1 — Questions à choix multiples": "Part 1 — Multiple-choice questions", "9 points · 25 min conseillées": "9 marks · 25 min suggested", "11 points · 65 min conseillées": "11 marks · 65 min suggested",
+  "Effacer ma réponse": "Clear my answer", "Formule et détail du calcul": "Formula and working", "Fin du sujet": "End of the paper",
+  "Relisez vos réponses, puis remettez votre copie.": "Check your answers, then submit your paper.", "Remettre ma copie": "Submit my paper",
+  "Les cases pleines indiquent les questions complétées.": "Filled boxes show completed questions.", "QCM": "MCQ", "Exercice": "Exercise",
+  " · mode démonstration": " · demo mode", "Enregistré sur cet ordinateur": "Saved on this computer", "Enregistré à ": "Saved at ",
+  "Hors ligne · réponses conservées localement": "Offline · answers kept on this computer",
+  "Il reste 15 minutes.": "15 minutes left.", "Il reste 5 minutes.": "5 minutes left.", "Dernière minute : la copie sera remise automatiquement.": "Last minute: your paper will be submitted automatically.",
+  "Temps supplémentaire accordé : ": "Extra time granted: ", "Remettre ma copie ?": "Submit your paper?",
+  "Après la remise, vous ne pourrez plus modifier vos réponses.": "Once submitted, you can no longer change your answers.",
+  "Questions incomplètes": "Incomplete questions", "Toutes les questions sont complétées.": "All questions are complete.",
+  "Continuer à composer": "Keep working", "Confirmer la remise": "Confirm submission", "Temps écoulé : remise de la copie…": "Time is up: submitting your paper…",
+  "La copie n’a pas pu être transmise": "Your paper could not be sent",
+  "Vos réponses sont conservées sur cet ordinateur. Vérifiez la connexion puis réessayez. Si le problème persiste, téléchargez votre copie et déposez le fichier sur Blackboard ou remettez-le à l’enseignante.": "Your answers are kept on this computer. Check your connection and try again. If the problem persists, download your paper and upload the file to Blackboard or give it to your lecturer.",
+  "Télécharger ma copie": "Download my paper", "Réessayer l’envoi": "Try again", "Fin de la démonstration": "End of demo",
+  "Mode démonstration : la copie n’a été transmise à personne. Vous pouvez télécharger le fichier des réponses pour tester l’import dans le tableau de bord.": "Demo mode: the paper was not sent to anyone. You can download the answer file to test the import in the dashboard.",
+  "Le temps est écoulé : votre copie a été remise automatiquement. ": "Time is up: your paper was submitted automatically. ",
+  "Votre copie a bien été enregistrée. Vous pouvez fermer cette page.": "Your paper has been saved. You can close this page.",
+  " — remise le ": " — submitted on ", " — référence ": " — reference ", "Télécharger le fichier des réponses": "Download the answer file",
+  "Nouvelle copie (autre étudiant·e)": "New paper (another student)", "Fermer": "Close",
+  "Une copie en cours a été trouvée sur cet ordinateur : cliquez sur « Commencer l’examen » pour la reprendre (le temps a continué de s’écouler).": "A paper in progress was found on this computer: click “Start the exam” to resume it (the timer kept running).",
+  "Lu : ": "Read: ", "Nombre non reconnu": "Number not recognised",
+  "Code de session incorrect.": "Incorrect session code.", "L'examen n'est pas ouvert.": "The exam is not open.",
+  "Une copie a déjà été remise à ce nom. Adressez-vous à l'enseignante.": "A paper has already been submitted under this name. Please speak to your lecturer.",
+  "Nom et prénom obligatoires.": "Last name and first name are required.", "Copie introuvable : recommencez depuis l'accueil.": "Paper not found: start again from the home page."
+};
+const L = s => (LANG === 'en' && EN[s] !== undefined) ? EN[s] : s;
+if (LANG === 'en') { document.documentElement.lang = 'en'; document.querySelectorAll('[data-t]').forEach(e => { e.textContent = L(e.textContent.trim()); }); }
+
+const DEMO = !/^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL);
+const $ = s => document.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v; else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+  }
+  kids.flat().forEach(k => k != null && e.append(k));
+  return e;
+};
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { } }
+};
+const sansAccents = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const cle = (n, p) => sansAccents(n).replace(/[^a-z]/g, '') + '|' + sansAccents(p).replace(/[^a-z]/g, '');
+function parseNum(v) {
+  if (v == null) return null;
+  const s = String(v).replace(/[\s  €%]/g, '').replace(/kg|g|cartons?|portions?|couverts?/gi, '').replace(',', '.');
+  if (s === '' || s === '-' || s === '.') return null;
+  const n = Number(s); return isFinite(n) ? n : null;
+}
+const normaliser = v => {
+  if (EXAM.lang !== 'en') return v;
+  let w = v.replace(/^\s*€\s*/, '').replace(/\s*(vacuum\s*packs?|packs?|portions?|covers?|kg|€|eur(os)?)\s*$/i, '').trim();
+  if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(w)) w = w.replace(/,/g, '');
+  return w;
+};
+const fmt = n => n.toLocaleString((EXAM.lang === 'en') ? 'en-GB' : 'fr-FR', { maximumFractionDigits: 4 });
+
+let S = null;           // état de la copie
+let timerId = null, syncId = null, dirty = false, remiseEnCours = false, alertes = {};
+
+/* ---------- Accueil ---------- */
+document.title = EXAM.entete + ' — ' + EXAM.titre + ' | FERRANDI Paris';
+$('#entete').textContent = EXAM.entete;
+$('#materiel').textContent = EXAM.materiel;
+$('#titre').textContent = EXAM.titre;
+(function () {
+  const t = $('#orga');
+  t.append(el('thead', {}, el('tr', {}, el('th', {}, L('Partie')), el('th', {}, L('Points')), el('th', {}, L('Temps conseillé')))));
+  const tb = el('tbody'); EXAM.organisation.forEach(r => tb.append(el('tr', {}, ...r.map(c => el('td', {}, c)))));
+  tb.append(el('tr', { class: 'tot' }, el('td', {}, L('Total')), el('td', {}, '20'), el('td', {}, '1 h 30'))); t.append(tb);
+  EXAM.consignes.forEach(c => $('#consignes').append(el('li', { html: c })));
+  if (EXAM.groupes) {
+    const sel = el('select', { id: 'groupe' }, el('option', { value: '' }, L('Choisir…')), ...EXAM.groupes.map(g => el('option', { value: g }, g)));
+    $('#groupe').replaceWith(sel); sel.addEventListener('change', majBouton);
+    $('#champGroupe label').textContent = L('Groupe *');
+    if (EXAM.groupes.length === 1) sel.value = EXAM.groupes[0];
+  }
+})();
+$('#sousTitre').textContent = EXAM.sousTitre;
+if (DEMO) $('#bandeauDemo').classList.remove('hidden');
+else fetch(API_URL + '?exam=' + EXAM.id).then(r => r.json()).then(r => { if (r.codeRequis) $('#blocCode').classList.remove('hidden'); if (r.ouvert === false) $('#errAccueil').textContent = L('L’examen n’est pas encore ouvert. Attendez la consigne de l’enseignante.'); }).catch(() => { });
+
+function majBouton() {
+  const ok = $('#nom').value.trim() && $('#prenom').value.trim() && $('#attest').checked && (!EXAM.groupes || $('#groupe').value) && ($('#blocCode').classList.contains('hidden') || $('#code').value.trim());
+  $('#btnCommencer').disabled = !ok;
+}
+['#nom', '#prenom', '#code', '#attest'].forEach(s => $(s).addEventListener('input', majBouton));
+$('#attest').addEventListener('change', majBouton);
+
+async function api(payload, ms = 25000) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
+  try {
+    const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify(Object.assign({ exam: EXAM.id }, payload)), signal: ctl.signal });
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+
+$('#btnCommencer').addEventListener('click', async () => {
+  const nom = $('#nom').value.trim(), prenom = $('#prenom').value.trim(), groupe = $('#groupe').value.trim();
+  const k = cle(nom, prenom);
+  if (k.length < 4) { $('#errAccueil').textContent = L('Vérifiez le nom et le prénom.'); return; }
+  const btn = $('#btnCommencer'); btn.disabled = true; btn.textContent = L('Connexion…'); $('#errAccueil').textContent = ''; $('#errAccueil').style.color = '';
+  const local = store.get(PFX + k);
+  if (local && local.remise) { S = local; afficherFin(); return; }
+  try {
+    let debut, fin, offset = 0, reponsesServeur = {};
+    if (DEMO) {
+      debut = local ? local.debut : Date.now(); fin = local ? local.fin : debut + EXAM.dureeMin * 60000;
+    } else {
+      const r = await api({ action: 'start', nom, prenom, groupe, code: $('#code').value.trim() });
+      if (!r.ok) throw new Error(L(r.erreur || 'Connexion refusée.'));
+      debut = r.debut; fin = r.fin; offset = r.serverNow - Date.now(); reponsesServeur = r.reponses || {};
+    }
+    S = Object.assign({ nom, prenom, groupe, reponses: {}, sorties: 0, horsPage: 0, remise: false }, local || {}, { nom, prenom, groupe, debut, fin, offset, cle: k });
+    if (Object.keys(S.reponses).length === 0 && Object.keys(reponsesServeur).length) S.reponses = reponsesServeur;
+    sauverLocal(); store.set(PFX + 'courant', k);
+    lancerExamen();
+  } catch (e) {
+    $('#errAccueil').textContent = e.name === 'AbortError' ? L('Le serveur ne répond pas. Vérifiez la connexion et réessayez.') : e.message;
+    btn.textContent = L('Commencer l’examen'); majBouton();
+  }
+});
+
+/* ---------- Construction de l'examen ---------- */
+function hash(s) { let h = 1779033703 ^ s.length; for (let i = 0; i < s.length; i++) { h = Math.imul(h ^ s.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return h >>> 0; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function ordreOptions(q) {
+  const ids = Object.keys(q.options);
+  if (q.num) return ids.sort((a, b) => parseNum(q.options[a]) - parseNum(q.options[b]));
+  const r = rng(hash(S.cle + q.id));
+  for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+  return ids;
+}
+
+const SOUS = EXAM.exercices.flatMap((ex, n) => ex.sous.map(sq => Object.assign({ grp: L('Exercice') + ' ' + (n + 1) }, sq)));
+const faitSous = (sq, R) => (sq.champs || []).every(c => R[c]) && (!sq.choix || R[sq.choix.id]) && (!sq.select || R[sq.select.id]) && (sq.textes || []).every(([t]) => R[t] && String(R[t]).trim());
+const ITEMS = [
+  ...EXAM.qcm.map((q, i) => ({ id: q.id, nav: String(i + 1), grp: L('QCM'), fait: R => !!R[q.id] })),
+  ...SOUS.map(sq => ({ id: sq.id, nav: sq.lettre, grp: sq.grp, fait: R => faitSous(sq, R) }))
+];
+const NOM_ITEM = it => it.grp === L('QCM') ? 'Q' + it.nav : 'Ex' + it.grp.split(' ').pop() + ' ' + it.nav + ')';
+
+function champNum(id) {
+  const c = EXAM.champs.find(x => x.id === id);
+  const input = el('input', { id: 'in_' + id, inputmode: 'decimal', autocomplete: 'off', 'aria-label': c.label });
+  input.value = S.reponses[id] || '';
+  const lu = el('div', { class: 'lu' });
+  const maj = () => {
+    const v = input.value.trim(), n = parseNum(normaliser(v));
+    lu.className = 'lu' + (v && n === null ? ' ko' : '');
+    lu.textContent = !v ? '' : n === null ? L('Nombre non reconnu') : L('Lu : ') + fmt(n) + ' ' + c.unite;
+  };
+  input.addEventListener('input', () => { setRep(id, normaliser(input.value.trim())); maj(); });
+  maj();
+  return el('div', { class: 'num' }, el('label', { for: 'in_' + id }, c.label), el('div', { class: 'bx' }, input, el('span', { class: 'u' }, c.unite)), lu);
+}
+function zoneTexte(id, label, ph) {
+  const t = el('textarea', { id: 'in_' + id, placeholder: ph || '' });
+  t.value = S.reponses[id] || '';
+  t.addEventListener('input', () => setRep(id, t.value));
+  return [el('label', { class: 'lbl-calc', for: 'in_' + id }, label), t];
+}
+function sousQ(anchor, lettre, enonce, pts, ...corps) {
+  return el('div', { class: 'sq', id: anchor },
+    el('div', { class: 'no' }, lettre + ')'),
+    el('div', {}, el('p', { class: 'enonce' }, enonce + ' ', el('span', { class: 'p' }, '(' + pts + ')')), ...corps));
+}
+
+function construire() {
+  const m = $('#contenu'); m.innerHTML = '';
+  // Partie 1
+  m.append(el('div', { class: 'partie-titre', id: 'partie1' }, el('h2', {}, L('Partie 1 — Questions à choix multiples')), el('span', { class: 'caps' }, L('9 points · 25 min conseillées'))),
+    el('p', { class: 'partie-intro' }, EXAM.partie1Intro));
+  EXAM.qcm.forEach((q, i) => {
+    const opts = el('div', { class: 'opts', role: 'radiogroup', 'aria-labelledby': 'en_' + q.id });
+    ordreOptions(q).forEach((oid, j) => {
+      const inp = el('input', { type: 'radio', name: q.id, value: oid });
+      if (S.reponses[q.id] === oid) inp.checked = true;
+      const lab = el('label', { class: 'opt' + (inp.checked ? ' sel' : '') }, inp, el('span', { class: 'l' }, 'abcd'[j]), el('span', {}, q.options[oid]));
+      inp.addEventListener('change', () => { setRep(q.id, oid); opts.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o.querySelector('input').checked)); });
+      opts.append(lab);
+    });
+    const eff = el('button', { class: 'effacer', type: 'button' }, L('Effacer ma réponse'));
+    eff.addEventListener('click', () => { opts.querySelectorAll('input').forEach(x => x.checked = false); opts.querySelectorAll('.opt').forEach(o => o.classList.remove('sel')); setRep(q.id, ''); });
+    m.append(el('div', { class: 'question', id: q.id },
+      el('div', { class: 'no' }, String(i + 1).padStart(2, '0')),
+      el('div', {}, el('p', { class: 'enonce', id: 'en_' + q.id }, q.texte),
+        q.table ? el('table', { class: 'donnees', style: 'margin-bottom:14px', html: q.table }) : null, opts, eff)));
+  });
+
+  // Partie 2
+  m.append(el('div', { class: 'partie-titre', id: 'partie2', style: 'margin-top:56px' }, el('h2', {}, EXAM.partie2Titre), el('span', { class: 'caps' }, L('11 points · 65 min conseillées'))),
+    el('p', { class: 'partie-intro' }, EXAM.partie2Intro));
+  EXAM.exercices.forEach((ex, n) => {
+    const bloc = el('div', { class: 'exercice', id: ex.id, style: n ? 'margin-top:54px' : '' },
+      el('h3', {}, ex.titre, el('span', { class: 'caps' }, ex.points)),
+      el('p', { class: 'contexte', html: ex.contexte }),
+      el('table', { class: 'donnees', html: ex.table }));
+    ex.sous.forEach(sq => {
+      const corps = [];
+      if (sq.champs && sq.champs.length) corps.push(el('div', { class: 'nums' }, ...sq.champs.map(champNum)));
+      if (sq.select) {
+        const sel = el('select', { id: 'in_' + sq.select.id, class: 'sel-rep' }, el('option', { value: '' }, 'Choisir…'), ...sq.select.options.map(o => Array.isArray(o) ? el('option', { value: o[0] }, o[1]) : el('option', { value: o }, o)));
+        sel.value = S.reponses[sq.select.id] || '';
+        sel.addEventListener('change', () => setRep(sq.select.id, sel.value));
+        corps.push(el('div', { class: 'num', style: 'margin-bottom:12px' }, el('label', { for: 'in_' + sq.select.id }, sq.select.label), sel));
+      }
+      if (sq.choix) {
+        const wrap = el('div', { class: 'choix', role: 'radiogroup' });
+        sq.choix.options.forEach(([v, txt]) => {
+          const inp = el('input', { type: 'radio', name: sq.choix.id, value: v });
+          if (S.reponses[sq.choix.id] === v) inp.checked = true;
+          const lab = el('label', { class: 'opt' + (inp.checked ? ' sel' : '') }, inp, el('span', { class: 'l' }, v), el('span', {}, txt));
+          inp.addEventListener('change', () => { setRep(sq.choix.id, v); wrap.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o.querySelector('input').checked)); });
+          wrap.append(lab);
+        });
+        corps.push(el('span', { class: 'lbl-calc' }, sq.choix.label), wrap);
+      }
+      (sq.textes || []).forEach(([id, lab], k) => { if (k) corps.push(el('div', { style: 'height:10px' })); corps.push(...zoneTexte(id, lab)); });
+      if (sq.calc) corps.push(...zoneTexte(sq.calc, L('Formule et détail du calcul')));
+      bloc.append(sousQ(sq.id, sq.lettre, sq.enonce, sq.pts, ...corps));
+    });
+    m.append(bloc);
+  });
+
+  const fin = el('div', { class: 'fin-ex' }, el('div', {}, el('div', { class: 'caps', style: 'color:var(--or)' }, L('Fin du sujet')), el('div', { style: 'margin-top:4px' }, L('Relisez vos réponses, puis remettez votre copie.'))),
+    el('button', { class: 'btn bord', type: 'button', onclick: demanderRemise }, L('Remettre ma copie')));
+  m.append(fin);
+
+  // Index
+  const nav = $('#index'); nav.innerHTML = '';
+  [L('QCM'), ...EXAM.exercices.map((e, n) => L('Exercice') + ' ' + (n + 1))].forEach(g => {
+    const box = el('div', { class: 'pts' });
+    ITEMS.filter(it => it.grp === g).forEach(it => box.append(el('a', { href: '#' + it.id, id: 'nav_' + it.id, title: NOM_ITEM(it) }, it.nav)));
+    nav.append(el('div', { class: 'grp' }, el('span', { class: 'caps' }, g), box));
+  });
+  nav.append(el('div', { class: 'leg' }, L('Les cases pleines indiquent les questions complétées.')));
+  majIndex();
+}
+
+function majIndex() {
+  let n = 0;
+  ITEMS.forEach(it => { const ok = !!it.fait(S.reponses); if (ok) n++; const a = document.getElementById('nav_' + it.id); if (a) a.classList.toggle('ok', ok); });
+  $('#prog').style.width = (100 * n / ITEMS.length) + '%';
+}
+
+function setRep(id, v) {
+  if (S.remise) return;
+  S.reponses[id] = v; dirty = true; sauverLocal(); majIndex();
+}
+function sauverLocal() { if (S) store.set(PFX + S.cle, S); }
+
+/* ---------- Déroulement ---------- */
+function lancerExamen() {
+  $('#accueil').classList.add('hidden'); $('#examen').classList.remove('hidden');
+  $('#qui').innerHTML = '';
+  $('#qui').append(el('b', {}, S.prenom + ' ' + S.nom.toUpperCase()), S.groupe ? ' · ' + S.groupe : '', DEMO ? L(' · mode démonstration') : '');
+  construire();
+  window.scrollTo(0, 0);
+  tick(); timerId = setInterval(tick, 1000);
+  if (!DEMO) { syncId = setInterval(() => synchroniser(false), 60000); setTimeout(() => synchroniser(true), 4000); }
+  else $('#etatSync').textContent = L('Enregistré sur cet ordinateur');
+}
+
+const maintenant = () => Date.now() + (S.offset || 0);
+function tick() {
+  const reste = Math.max(0, S.fin - maintenant());
+  const h = Math.floor(reste / 3600000), mn = Math.floor(reste % 3600000 / 60000), s = Math.floor(reste % 60000 / 1000);
+  $('#minuteur').firstChild.nodeValue = h + ':' + String(mn).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  $('#minuteur').classList.toggle('alerte', reste <= 10 * 60000);
+  [[15, L('Il reste 15 minutes.')], [5, L('Il reste 5 minutes.')], [1, L('Dernière minute : la copie sera remise automatiquement.')]].forEach(([m, txt]) => {
+    if (reste <= m * 60000 && reste > (m - 1) * 60000 && !alertes[m]) { alertes[m] = true; toast(txt); }
+  });
+  if (reste <= 0 && !S.remise && !remiseEnCours) remettre(true);
+}
+
+function toast(txt, ms = 6000) { const t = $('#toast'); t.textContent = txt; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', ms); }
+
+let derniereSync = 0;
+async function synchroniser(force) {
+  if (DEMO || S.remise || remiseEnCours) return;
+  if (!dirty && !force && Date.now() - derniereSync < 180000) return;
+  const etat = $('#etatSync');
+  try {
+    const avant = dirty; dirty = false;
+    const r = await api({ action: 'save', nom: S.nom, prenom: S.prenom, reponses: S.reponses, sorties: S.sorties, horsPage: S.horsPage });
+    if (!r.ok) { dirty = dirty || avant; throw new Error(r.erreur); }
+    derniereSync = Date.now();
+    S.offset = r.serverNow - Date.now();
+    if (r.dejaRemise) { S.remise = true; S.remiseA = Date.now(); sauverLocal(); afficherFin(); return; }
+    if (r.fin && r.fin !== S.fin) { if (r.fin > S.fin) toast(L('Temps supplémentaire accordé : ') + Math.round((r.fin - S.fin) / 60000) + ' min.'); S.fin = r.fin; delete alertes[15]; delete alertes[5]; delete alertes[1]; }
+    sauverLocal();
+    etat.className = 'etat-sync'; etat.textContent = L('Enregistré à ') + new Date().toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' });
+  } catch (e) {
+    dirty = true; etat.className = 'etat-sync ko'; etat.textContent = L('Hors ligne · réponses conservées localement');
+  }
+}
+
+/* Sorties de page */
+let cacheA = null;
+document.addEventListener('visibilitychange', () => {
+  if (!S || S.remise || $('#examen').classList.contains('hidden')) return;
+  if (document.hidden) { cacheA = Date.now(); S.sorties++; sauverLocal(); }
+  else if (cacheA) { S.horsPage += (Date.now() - cacheA) / 1000; cacheA = null; sauverLocal(); dirty = true; }
+});
+window.addEventListener('beforeunload', e => { if (S && !S.remise && !$('#examen').classList.contains('hidden')) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ---------- Remise ---------- */
+function modale(contenu) {
+  const v = el('div', { class: 'voile' }, el('div', { class: 'modale', role: 'dialog', 'aria-modal': 'true' }, ...contenu));
+  v.addEventListener('click', e => { if (e.target === v) v.remove(); });
+  $('#modales').append(v); return v;
+}
+function demanderRemise() {
+  const manquants = ITEMS.filter(it => !it.fait(S.reponses)).map(NOM_ITEM);
+  let v;
+  v = modale([
+    el('h3', {}, L('Remettre ma copie ?')),
+    el('p', {}, L('Après la remise, vous ne pourrez plus modifier vos réponses.')),
+    manquants.length ? el('p', { class: 'manque' }, L('Questions incomplètes') + ' (' + manquants.length + ') : ' + manquants.join(', ')) : el('p', { style: 'color:var(--vert);font-family:var(--sans);font-size:14px' }, L('Toutes les questions sont complétées.')),
+    el('div', { class: 'actions' },
+      el('button', { class: 'btn sec', type: 'button', onclick: () => v.remove() }, L('Continuer à composer')),
+      el('button', { class: 'btn bord', type: 'button', onclick: () => { v.remove(); remettre(false); } }, L('Confirmer la remise')))
+  ]);
+}
+
+async function remettre(auto) {
+  if (remiseEnCours || S.remise) return;
+  remiseEnCours = true;
+  document.querySelectorAll('#contenu input, #contenu textarea, #contenu button').forEach(x => x.disabled = true);
+  if (auto) toast(L('Temps écoulé : remise de la copie…'), 4000);
+  if (DEMO) { finaliser({ demo: true, auto }); return; }
+  for (let essai = 0; essai < 4; essai++) {
+    try {
+      const r = await api({ action: 'submit', nom: S.nom, prenom: S.prenom, reponses: S.reponses, sorties: S.sorties, horsPage: S.horsPage, auto });
+      if (r.ok) { finaliser({ recu: r.recu || '', statut: r.statut, auto }); return; }
+      throw new Error(r.erreur);
+    } catch (e) { await new Promise(res => setTimeout(res, 3000 * (essai + 1))); }
+  }
+  remiseEnCours = false;
+  S.echecEnvoi = true; sauverLocal();
+  afficherEchec(auto);
+}
+
+function finaliser(info) {
+  clearInterval(timerId); clearInterval(syncId);
+  S.remise = true; S.remiseA = maintenant(); S.recu = info.recu || ''; S.demo = !!info.demo; S.auto = !!info.auto; S.echecEnvoi = false;
+  sauverLocal(); remiseEnCours = false;
+  afficherFin();
+}
+
+function fichierCopie() {
+  const data = { format: 'ccscm-copie-v1', exam: EXAM.id, nom: S.nom, prenom: S.prenom, groupe: S.groupe, debut: S.debut, remise: S.remiseA || maintenant(), sorties: S.sorties, horsPage: Math.round(S.horsPage), reponses: S.reponses };
+  const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
+  const a = el('a', { href: URL.createObjectURL(blob), download: 'Copie_' + EXAM.id.toUpperCase() + '_' + sansAccents(S.nom).replace(/[^a-z]/g, '').toUpperCase() + '_' + sansAccents(S.prenom).replace(/[^a-z]/g, '') + '.json' });
+  document.body.append(a); a.click(); a.remove();
+}
+
+function afficherEchec(auto) {
+  let v;
+  v = modale([
+    el('h3', {}, L('La copie n’a pas pu être transmise')),
+    el('p', {}, L('Vos réponses sont conservées sur cet ordinateur. Vérifiez la connexion puis réessayez. Si le problème persiste, téléchargez votre copie et déposez le fichier sur Blackboard ou remettez-le à l’enseignante.')),
+    el('div', { class: 'actions' },
+      el('button', { class: 'btn sec', type: 'button', onclick: fichierCopie }, L('Télécharger ma copie')),
+      el('button', { class: 'btn', type: 'button', onclick: () => { v.remove(); remettre(auto); } }, L('Réessayer l’envoi')))
+  ]);
+}
+
+function afficherFin() {
+  clearInterval(timerId); clearInterval(syncId);
+  $('#accueil').classList.add('hidden'); $('#examen').classList.add('hidden'); $('#fin').classList.remove('hidden');
+  document.querySelectorAll('.voile').forEach(v => v.remove()); $('#calc').classList.add('hidden');
+  const quand = new Date(S.remiseA || Date.now()).toLocaleString(LOC, { dateStyle: 'long', timeStyle: 'short' });
+  $('#finTitre').textContent = S.demo ? L('Fin de la démonstration') : L('Copie remise');
+  $('#finTexte').textContent = S.demo
+    ? L('Mode démonstration : la copie n’a été transmise à personne. Vous pouvez télécharger le fichier des réponses pour tester l’import dans le tableau de bord.')
+    : (S.auto ? L('Le temps est écoulé : votre copie a été remise automatiquement. ') : '') + L('Votre copie a bien été enregistrée. Vous pouvez fermer cette page.');
+  $('#finRef').textContent = S.prenom + ' ' + S.nom.toUpperCase() + (S.groupe ? ' · ' + S.groupe : '') + L(' — remise le ') + quand + (S.recu ? L(' — référence ') + S.recu : '');
+  const act = $('#finActions'); act.innerHTML = '';
+  if (S.demo) act.append(el('button', { class: 'btn sec', type: 'button', onclick: fichierCopie }, L('Télécharger le fichier des réponses')));
+  act.append(el('button', { class: 'btn sec', type: 'button', onclick: () => { store.del(PFX + 'courant'); location.reload(); } }, L('Nouvelle copie (autre étudiant·e)')));
+}
+
+$('#btnRemettre').addEventListener('click', demanderRemise);
+
+/* ---------- Formulaire ---------- */
+$('#btnFormulaire').addEventListener('click', () => {
+  let v;
+  const lignes = EXAM.formulaire;
+  const t = el('table', { class: 'formulaire', style: 'width:100%;border-collapse:collapse' });
+  lignes.forEach(([a, b]) => t.append(el('tr', {}, el('td', {}, a), el('td', {}, b))));
+  v = modale([el('h3', {}, L('Formulaire')), t, el('div', { class: 'actions' }, el('button', { class: 'btn', type: 'button', onclick: () => v.remove() }, L('Fermer')))]);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.voile').forEach(v => v.remove()); });
+
+/* ---------- Calculatrice (sans eval) ---------- */
+const calc = { expr: '' };
+function evaluer(src) {
+  const s = src.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '.').replace(/\s/g, '');
+  let i = 0;
+  const peek = () => s[i];
+  function nombre() { let st = i; while (/[0-9.]/.test(s[i] || '')) i++; if (st === i) throw 0; const n = Number(s.slice(st, i)); if (!isFinite(n)) throw 0; return n; }
+  function facteur() {
+    if (peek() === '-') { i++; return -facteur(); }
+    if (peek() === '+') { i++; return facteur(); }
+    let v;
+    if (peek() === '(') { i++; v = somme(); if (peek() !== ')') throw 0; i++; } else v = nombre();
+    if (peek() === '%') { i++; v = v / 100; }
+    return v;
+  }
+  function produit() { let v = facteur(); while (peek() === '*' || peek() === '/') { const o = s[i++]; const w = facteur(); v = o === '*' ? v * w : v / w; } return v; }
+  function somme() { let v = produit(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const w = produit(); v = o === '+' ? v + w : v - w; } return v; }
+  const v = somme(); if (i !== s.length) throw 0; return v;
+}
+function majCalc(final) {
+  $('#calcExpr').textContent = calc.expr;
+  try { const v = evaluer(calc.expr || '0'); $('#calcRes').textContent = isFinite(v) ? fmt(Math.round(v * 1e8) / 1e8) : 'Erreur'; if (final) { calc.expr = String(Math.round(v * 1e8) / 1e8).replace('.', ','); $('#calcExpr').textContent = ''; } }
+  catch (e) { if (final) $('#calcRes').textContent = 'Erreur'; }
+}
+['C', '(', ')', '÷', '7', '8', '9', '×', '4', '5', '6', '−', '1', '2', '3', '+', '0', ',', '⌫', '='].forEach(k => {
+  const b = el('button', { type: 'button', class: /[÷×−+()]/.test(k) ? 'op' : k === '=' ? 'eg' : '' }, k);
+  b.addEventListener('click', () => touche(k)); $('#calcTouches').append(b);
+});
+function touche(k) {
+  if (k === 'C') calc.expr = ''; else if (k === '⌫') calc.expr = calc.expr.slice(0, -1); else if (k === '=') return majCalc(true);
+  else calc.expr += k === '−' ? '-' : k;
+  majCalc(false);
+}
+$('#btnCalc').addEventListener('click', () => $('#calc').classList.toggle('hidden'));
+$('#calcFermer').addEventListener('click', () => $('#calc').classList.add('hidden'));
+document.addEventListener('keydown', e => {
+  if ($('#calc').classList.contains('hidden')) return;
+  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+  const map = { '*': '×', '/': '÷', '-': '−', '.': ',', 'Enter': '=', 'Backspace': '⌫', 'Delete': 'C' };
+  const k = map[e.key] || e.key;
+  if (/^[0-9+×÷−,()=⌫C]$/.test(k) || k === '⌫') { e.preventDefault(); touche(k); }
+});
+(function deplacable() {
+  const box = $('#calc'), t = $('#calcTitre'); let dx, dy, on = false;
+  t.addEventListener('pointerdown', e => { if (e.target.tagName === 'BUTTON') return; on = true; const r = box.getBoundingClientRect(); dx = e.clientX - r.left; dy = e.clientY - r.top; t.setPointerCapture(e.pointerId); });
+  t.addEventListener('pointermove', e => { if (!on) return; box.style.left = Math.max(0, e.clientX - dx) + 'px'; box.style.top = Math.max(0, e.clientY - dy) + 'px'; box.style.right = 'auto'; box.style.bottom = 'auto'; });
+  t.addEventListener('pointerup', () => on = false);
+})();
+
+/* ---------- Reprise automatique ---------- */
+(function reprise() {
+  const k = store.get(PFX + 'courant'); if (!k) return;
+  const st = store.get(PFX + k); if (!st) return;
+  if (st.remise) { S = st; afficherFin(); return; }
+  if (st.echecEnvoi || st.debut) {
+    $('#nom').value = st.nom; $('#prenom').value = st.prenom; $('#groupe').value = st.groupe || ''; $('#attest').checked = true; majBouton();
+    $('#errAccueil').style.color = 'var(--navy)';
+    $('#errAccueil').textContent = L('Une copie en cours a été trouvée sur cet ordinateur : cliquez sur « Commencer l’examen » pour la reprendre (le temps a continué de s’écouler).');
+  }
+})();
+</script>
+</body>
+</html>
